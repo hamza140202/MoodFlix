@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Should I Watch?</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>What Should I Watch?</h1>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label for="mood-select">Mood:</label>
+                <select id="mood-select">
+                    <option value="">--Select Mood--</option>
+                    <!-- Mood options will be populated by JavaScript -->
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="genre-select">Genre:</label>
+                <select id="genre-select">
+                    <option value="">--Select Genre--</option>
+                    <!-- Genre options will be populated by JavaScript -->
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="time-select">Available Time:</label>
+                <select id="time-select">
+                    <option value="">--Select Time--</option>
+                    <!-- Time options will be populated by JavaScript -->
+                </select>
+            </div>
+        </div>
+
+        <button id="spin-button">🎲 Spin to Suggest</button>
+
+        <div id="suggestion-area" class="suggestion-area" style="display:none;">
+            <h2>Your Suggestion:</h2>
+            <div id="suggestion-content">
+                <h3 id="suggestion-title"></h3>
+                <p id="suggestion-description"></p>
+                <p id="suggestion-details"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
