@@ -94,23 +94,42 @@ h1 {
 /* Footer and Attribution Styles */
 footer {
     text-align: center;
-    padding: 20px 0;
-    margin-top: 30px; /* Space above the footer */
-    font-size: 0.85em; /* Smaller font for attribution */
-    color: #666; /* Subdued text color */
-    border-top: 1px solid #eee; /* Optional separator line */
-    width: 100%;
-    max-width: 600px; /* Align with container width */
+    padding: 15px; /* Adjusted padding slightly */
+    margin-top: 30px;
+    font-size: 0.8em; /* Slightly smaller font for mobile */
+    color: #666;
+    border-top: 1px solid #eee;
+    width: 90%; /* Use a percentage width for better fluidity */
+    max-width: 600px; /* Max width still applies for larger screens */
     margin-left: auto;
     margin-right: auto;
+    box-sizing: border-box; /* Ensure padding doesn't add to width */
 }
 
 footer p {
     margin: 0;
+    display: flex; /* Use flexbox for better control */
+    flex-direction: column; /* Stack items vertically on small screens by default */
+    align-items: center; /* Center items in the column */
+    justify-content: center; /* Center content if there's space */
+    gap: 5px; /* Add a small gap between text and image when stacked */
+}
+
+footer a {
+    display: inline-block; /* Allows margin/padding on the link if needed */
+    line-height: 1; /* Helps with vertical alignment of image if it were inline with text */
 }
 
 footer a img {
-    height: 20px; /* Ensure logo height is controlled */
-    vertical-align: middle;
-    margin-left: 5px;
+    height: 20px;
+    /* vertical-align: middle; no longer needed as flex handles alignment */
+    /* margin-left: 5px; gap in flex p handles spacing */
+}
+
+/* Media query for slightly larger screens to put text and logo side-by-side if space allows */
+@media (min-width: 400px) { /* Adjust breakpoint as needed */
+    footer p {
+        flex-direction: row; /* Text and logo side-by-side */
+        gap: 8px; /* Adjust gap for row layout */
+    }
 }
