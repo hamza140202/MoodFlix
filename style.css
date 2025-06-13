@@ -1,86 +1,28 @@
-:root {
-    --color-lavender: #e6e6fa;
-    --color-peach: #ffdab9;
-    --color-teal: #afeeee;
-    --color-moonlight-white: #f8f8ff;
-    --color-glow-accent: #fffacd; /* LemonChiffon as a starting glow */
-    --text-color: #333; /* Darker text for readability */
-    --text-color-light: #555;
-    --color-teal-transparent: rgba(175, 238, 238, 0.5); /* Transparent teal for borders */
-    --color-runes: rgba(200, 220, 255, 0.4); /* Light, ethereal blue for runes */
-    --color-scroll-bg: #fdf5e6; /* Aged paper color for scroll background */
-}
-
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-image:
-        radial-gradient(ellipse at bottom, var(--color-peach) 0%, transparent 70%),
-        linear-gradient(to top, var(--color-lavender) 0%, var(--color-teal) 70%, var(--color-moonlight-white) 100%);
-    background-attachment: fixed; /* Keeps the background fixed during scroll */
+    background-color: #f4f4f4;
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
-    color: var(--text-color); /* Default text color */
 }
 
 .container {
-    background-color: var(--color-moonlight-white); /* Base color for the container */
-    /* Subtle noise texture using a CSS gradient */
-    background-image:
-        linear-gradient(45deg, rgba(0,0,0,0.01) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.01) 75%, rgba(0,0,0,0.01)),
-        linear-gradient(45deg, rgba(0,0,0,0.01) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.01) 75%, rgba(0,0,0,0.01));
-    background-size: 4px 4px; /* Size of the noise pattern */
-    background-position: 0 0, 2px 2px; /* Offset for the two layers to create a denser pattern */
+    background-color: #fff;
     padding: 30px;
-    border-radius: 15px; /* More rounded corners */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Enhanced box-shadow */
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 600px;
     text-align: center;
 }
 
-a {
-    color: var(--color-teal);
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-a:hover, a:focus {
-    color: var(--color-peach);
-}
-
 h1 {
-    font-family: 'Merriweather', serif;
-    color: #006994; /* Darker teal */
-    margin-bottom: 30px; /* Increased margin */
-    text-align: center; /* Ensure it's centered */
-    text-shadow: 2px 2px 4px var(--color-glow-accent); /* Subtle glow */
-    /* Make sure h1 itself doesn't prevent spans from being visible if it has a fixed height or overflow hidden */
-    line-height: 1.2; /* Adjust if letters appear vertically clipped */
-}
-
-h1 span {
-    display: inline-block; /* Necessary for transforms and animations */
-    opacity: 0;
-    transform: translateY(20px);
-    /* Animation will be applied by JavaScript to stagger delays */
-}
-
-h2, h3 { /* Keep other headings styled as they were, but separate from h1 */
-    font-family: 'Merriweather', serif;
-    color: var(--text-color); /* Heading text color */
+    color: #333;
     margin-bottom: 20px;
-}
-
-@keyframes fadeInLetter {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 .filters {
@@ -99,7 +41,7 @@ h2, h3 { /* Keep other headings styled as they were, but separate from h1 */
 .filter-group label {
     margin-bottom: 5px;
     font-weight: bold;
-    color: var(--text-color-light);
+    color: #555;
 }
 
 .filter-group select {
@@ -110,324 +52,65 @@ h2, h3 { /* Keep other headings styled as they were, but separate from h1 */
     box-sizing: border-box;
 }
 
-/* Styling for New Thematic Filters */
-.thematic-filter-group {
-    /* Inherits .filter-group styles: display: flex; flex-direction: column; align-items: flex-start; */
-    /* Add specific gap if needed, or adjust in .filters */
-}
-
-.talisman-card-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px; /* Spacing between cards */
-    padding: 5px 0; /* Small padding top/bottom if needed */
-    width: 100%; /* Ensure it takes full width of its parent */
-}
-
-.talisman-card {
-    position: relative; /* For pseudo-element positioning */
-    overflow: hidden; /* To contain pseudo-element blur */
-    padding: 12px 18px; /* Slightly increased padding */
-    border: 1px solid var(--color-teal-transparent);
-    border-radius: 10px; /* Slightly more rounded */
-    background-image: linear-gradient(135deg, var(--color-moonlight-white) 0%, var(--color-lavender) 70%, var(--color-peach) 100%);
-    color: var(--text-color);
+#spin-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1.1em;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.4s ease, border-color 0.4s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    font-family: 'Montserrat', sans-serif; /* Keeping Montserrat for readability */
-    font-size: 0.9em;
-    text-align: center;
-    flex-grow: 1;
-    flex-basis: calc(33.333% - 20px);
-    min-width: 100px;
-    box-sizing: border-box;
-    box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.3), 0 1px 3px rgba(0,0,0,0.1);
-    z-index: 1; /* Ensure card content is above pseudo-elements */
-}
-
-.talisman-card::before {
-    content: "✧✵✦✥✨❈❉※"; /* Example glyphs, can be refined or replaced with SVG */
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    font-size: 2em; /* Adjust size of runes */
-    color: var(--color-runes);
-    opacity: 0.15; /* Subtle visibility */
-    filter: blur(2px);
-    z-index: -1; /* Behind the card's text content */
-    text-align: center; /* Center the runes text */
-    overflow: hidden; /* Prevent runes from spilling out due to blur or large font */
-    line-height: 1.5; /* Adjust line height for better distribution of glyphs */
-    display: flex; /* For alignment if needed */
-    align-items: center;
-    justify-content: center;
-    text-shadow: 0 0 3px var(--color-glow-accent); /* Slight glow for runes themselves */
-}
-
-
-.talisman-card:hover {
-    border-color: var(--color-peach);
-    transform: translateY(-3px) scale(1.03) rotate(1deg); /* Added rotation and adjusted scale */
-    box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.4), 0 4px 8px rgba(0,0,0,0.15);
-}
-
-.talisman-card:hover::before {
-    opacity: 0.4; /* Make runes more visible on hover */
-    filter: blur(1px); /* Slightly sharper */
-}
-
-.talisman-card.active {
-    background-image: linear-gradient(135deg, var(--color-teal) 0%, var(--color-lavender) 80%, var(--color-glow-accent) 100%);
-    color: #fff; /* White text for active state for better contrast */
-    border-color: var(--color-glow-accent);
-    transform: scale(1.08); /* More pronounced pop for active */
-    box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.6), 0 0 12px var(--color-glow-accent), 0 2px 5px rgba(0,0,0,0.2);
-    text-shadow: 0 0 5px rgba(0,0,0,0.3); /* Slight shadow for text on active card */
-}
-
-.talisman-card.active::before {
-    opacity: 0.3; /* Make runes slightly more visible on active card */
-    filter: blur(1.5px); /* Slightly sharper runes */
-}
-
-/* Ensure hover on active card doesn't revert its style if it's too generic */
-.talisman-card.active:hover {
-    border-color: var(--color-moonlight-white); /* Bright border on hover for active */
-    transform: scale(1.1) translateY(-2px) rotate(-1deg); /* Added opposite rotation */
-    box-shadow: inset 0 0 7px rgba(255, 255, 255, 0.7), 0 0 15px var(--color-glow-accent), 0 3px 7px rgba(0,0,0,0.25);
-}
-
-@keyframes magicalPulse {
-    0% {
-        box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.6), 0 0 12px var(--color-glow-accent), 0 2px 5px rgba(0,0,0,0.2);
-        transform: scale(1.08); /* From active state */
-    }
-    50% {
-        box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.8), 0 0 20px var(--color-glow-accent), 0 0 25px var(--color-peach), 0 2px 5px rgba(0,0,0,0.2);
-        transform: scale(1.12);
-    }
-    100% {
-        box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.6), 0 0 12px var(--color-glow-accent), 0 2px 5px rgba(0,0,0,0.2);
-        transform: scale(1.08); /* Return to active state's scale */
-    }
-}
-
-.pulsing {
-    animation: magicalPulse 0.6s ease-out;
-}
-
-.action-buttons-container {
-    display: flex;
-    flex-direction: column; /* Stack spin and surprise buttons vertically */
-    align-items: center; /* Center them horizontally */
-    gap: 15px; /* Space between buttons */
-    margin-top: 25px; /* Space above the button container */
+    transition: background-color 0.3s ease;
     margin-bottom: 20px;
 }
 
-#spin-button {
-    width: 100px;
-    height: 100px;
-    padding: 0; /* Remove padding if fixed size and flex centering text */
-    border-radius: 50%;
-    border: 3px solid var(--color-glow-accent);
-    background-image: radial-gradient(circle at center, var(--color-moonlight-white) 0%, var(--color-teal) 60%, var(--color-peach) 100%);
-    color: var(--text-color);
-    font-family: 'Merriweather', serif;
-    font-size: 1.2em;
-    font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-    box-shadow: 0 0 15px var(--color-teal), inset 0 0 10px var(--color-moonlight-white);
-    cursor: pointer;
-    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, background-image 0.3s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center; /* Ensure text is centered if it wraps */
-    margin: 0; /* Remove old margin, will be handled by container */
-}
-
 #spin-button:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 25px var(--color-peach), inset 0 0 12px var(--color-moonlight-white);
-    background-image: radial-gradient(circle at center, var(--color-moonlight-white) 0%, var(--color-peach) 60%, var(--color-teal) 100%);
+    background-color: #0056b3;
 }
 
-#spin-button:active {
-    transform: scale(0.95);
-    box-shadow: 0 0 10px var(--color-teal), inset 0 0 20px var(--color-glow-accent);
-}
-
-/* Minor style adjustment for surprise button to align with new spin button look */
-#surprise-button {
-    width: 80px;
-    height: 120px;
-    padding: 0; /* Remove padding to let content be centered by flex */
-    border: 1px solid var(--color-peach);
-    border-radius: 8px;
-    position: relative;
-    perspective: 1000px;
-    cursor: pointer;
-    font-family: 'Merriweather', serif; /* Thematic font */
-    color: var(--color-moonlight-white); /* Text color for the back of the card */
-    box-shadow: 3px 3px 7px rgba(0,0,0,0.2);
-    background-image: linear-gradient(135deg, var(--color-lavender), var(--color-teal)); /* Mystical back */
-    display: flex; /* For centering content */
-    justify-content: center; /* For centering content */
-    align-items: center; /* For centering content */
-    text-align: center; /* For centering content */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transition for hover */
-}
-
-#surprise-button::before {
-    content: "🔮"; /* Crystal ball emoji or other symbol */
-    font-size: 30px;
-    color: var(--color-moonlight-white); /* Ensure this is visible on the gradient */
-    position: absolute;
-    top: 35%; /* Adjust to position above text */
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0.7;
-    z-index: 1; /* Ensure symbol is above background but below text if any direct child text */
-}
-
-#surprise-button .button-text { /* If we wrap text in a span, for better control */
-    position: relative;
-    z-index: 2;
-    font-size: 0.9em; /* Adjust as needed */
-    padding-top: 30px; /* Space for the emoji */
-}
-
-
-#surprise-button:hover {
-    transform: scale(1.05) translateY(-2px);
-    box-shadow: 5px 5px 12px rgba(0,0,0,0.3);
-}
-
-@keyframes tarotFlip {
-    0% {
-        transform: rotateY(0deg);
-        /* background-image: linear-gradient(135deg, var(--color-lavender), var(--color-teal)); */ /* Initial back */
-    }
-    50% {
-        transform: rotateY(180deg);
-        /* background-image: linear-gradient(135deg, var(--color-moonlight-white), var(--color-peach)); */ /* Conceptual front */
-    }
-    100% {
-        transform: rotateY(0deg); /* Flips back */
-        /* background-image: linear-gradient(135deg, var(--color-lavender), var(--color-teal)); */ /* Back to initial back */
-    }
-}
-
-#surprise-button.flipping {
-    animation: tarotFlip 0.8s ease-in-out;
-}
-
-/* The first pulseBorder keyframes was removed as it's duplicated later */
 .suggestion-area {
-    background-color: var(--color-scroll-bg);
-    border: 2px solid var(--color-peach); /* Or a darker brown like #8B4513 (saddlebrown) */
-    border-radius: 10px;
-    padding: 30px; /* Increased padding */
-    box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
-    position: relative;
-    margin-top: 30px; /* Increased margin */
-    font-family: 'Merriweather', serif; /* Thematic font for suggestion text */
-    color: var(--text-color); /* Ensure good contrast on scroll background */
-    animation: pulseBorder 3s infinite alternate;
-    opacity: 0; /* Initial state for fly-in */
-    transform: translateY(30px) scale(0.95); /* Initial state for fly-in */
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-    /* display: none; will be handled by JS, opacity handles visibility during animation */
-}
-
-.suggestion-area-visible {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    background-color: #f9f9f9;
 }
 
 .suggestion-area h2 {
     margin-top: 0;
-    color: var(--text-color); /* Ensure this is readable */
-    font-size: 1.8em; /* Slightly larger for suggestion title */
-    text-align: center;
-    border-bottom: 1px solid var(--color-peach); /* Thematic separator */
-    padding-bottom: 10px;
-    margin-bottom: 20px;
+    color: #333;
 }
 
-#suggestion-content {
-    /* Styles for the content wrapper if needed */
+#suggestion-content h3 {
+    color: #007bff;
+    margin-bottom: 10px;
 }
 
-#suggestion-poster {
-    border: 3px solid var(--color-peach); /* Thematic border */
-    border-radius: 5px; /* Match overall roundness */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15); /* Subtle shadow */
-    /* max-width, height, margin, display are handled inline or by other rules, ensure they don't conflict */
+#suggestion-content p {
+    color: #555;
+    line-height: 1.6;
 }
-
-#suggestion-content h3 { /* This is suggestion-title */
-    font-family: 'Merriweather', serif;
-    color: #5D4037; /* Darker, rich brown for title text */
-    font-size: 1.5em; /* Ensure it's prominent */
-    margin-bottom: 15px;
-}
-
-#suggestion-content p { /* This is suggestion-description and suggestion-details */
-    color: var(--text-color); /* Ensure readability on scroll background */
-    line-height: 1.7; /* More leading for readability */
-    font-size: 1em;
-    margin-bottom: 10px; /* Spacing for paragraphs */
-}
-
-#suggestion-details span { /* Spans within suggestion-details */
-    font-weight: bold;
-    color: #795548; /* Slightly lighter brown for detail labels */
-}
-
 
 /* Footer and Attribution Styles */
 footer {
     text-align: center;
-    padding: 15px; /* Adjusted padding slightly */
-    margin-top: 30px;
-    font-size: 0.8em; /* Slightly smaller font for mobile */
-    color: var(--text-color-light);
-    border-top: 1px solid #eee;
-    width: 90%; /* Use a percentage width for better fluidity */
-    max-width: 600px; /* Max width still applies for larger screens */
+    padding: 20px 0;
+    margin-top: 30px; /* Space above the footer */
+    font-size: 0.85em; /* Smaller font for attribution */
+    color: #666; /* Subdued text color */
+    border-top: 1px solid #eee; /* Optional separator line */
+    width: 100%;
+    max-width: 600px; /* Align with container width */
     margin-left: auto;
     margin-right: auto;
-    box-sizing: border-box; /* Ensure padding doesn't add to width */
 }
 
 footer p {
     margin: 0;
-    display: flex; /* Use flexbox for better control */
-    flex-direction: column; /* Stack items vertically on small screens by default */
-    align-items: center; /* Center items in the column */
-    justify-content: center; /* Center content if there's space */
-    gap: 5px; /* Add a small gap between text and image when stacked */
-}
-
-footer a {
-    display: inline-block; /* Allows margin/padding on the link if needed */
-    line-height: 1; /* Helps with vertical alignment of image if it were inline with text */
 }
 
 footer a img {
-    height: 20px;
-    /* vertical-align: middle; no longer needed as flex handles alignment */
-    /* margin-left: 5px; gap in flex p handles spacing */
-}
-
-/* Media query for slightly larger screens to put text and logo side-by-side if space allows */
-@media (min-width: 400px) { /* Adjust breakpoint as needed */
-    footer p {
-        flex-direction: row; /* Text and logo side-by-side */
-        gap: 8px; /* Adjust gap for row layout */
-    }
+    height: 20px; /* Ensure logo height is controlled */
+    vertical-align: middle;
+    margin-left: 5px;
 }
