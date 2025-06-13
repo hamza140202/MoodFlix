@@ -5,26 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>What Should I Watch?</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1>What Should I Watch?</h1>
+        <h1><span>W</span><span>h</span><span>a</span><span>t</span><span> </span><span>S</span><span>h</span><span>o</span><span>u</span><span>l</span><span>d</span><span> </span><span>I</span><span> </span><span>W</span><span>a</span><span>t</span><span>c</span><span>h</span><span>?</span></h1>
 
         <div class="filters">
-            <div class="filter-group">
-                <label for="mood-select">Mood:</label>
-                <select id="mood-select">
-                    <option value="">-- Any Mood --</option>
-                    <!-- Mood options will be populated by JavaScript -->
-                </select>
+            <div class="filter-group thematic-filter-group">
+                <label for="emotion-mood-filter">Emotion Mood:</label>
+                <div id="emotion-mood-filter" class="talisman-card-container">
+                    <!-- Cards will be populated here by JavaScript -->
+                </div>
             </div>
 
-            <div class="filter-group">
-                <label for="genre-select">Genre:</label>
-                <select id="genre-select">
-                    <option value="">-- Any Genre --</option>
-                    <!-- Genre options will be populated by JavaScript -->
-                </select>
+            <div class="filter-group thematic-filter-group">
+                <label for="magic-type-filter">Magic Type:</label>
+                <div id="magic-type-filter" class="talisman-card-container">
+                    <!-- Cards will be populated here by JavaScript -->
+                </div>
+            </div>
+
+            <div class="filter-group thematic-filter-group">
+                <label for="world-setting-filter">World Setting:</label>
+                <div id="world-setting-filter" class="talisman-card-container">
+                    <!-- Cards will be populated here by JavaScript -->
+                </div>
+            </div>
+
+            <div class="filter-group thematic-filter-group">
+                <label for="companion-type-filter">Companion Type:</label>
+                <div id="companion-type-filter" class="talisman-card-container">
+                    <!-- Cards will be populated here by JavaScript -->
+                </div>
             </div>
 
             <div class="filter-group">
@@ -77,8 +90,10 @@
             </div>
         </div>
 
-        <button id="spin-button">🎲 Spin to Suggest</button>
-        <button id="surprise-button" style="margin-left: 10px; background-color: #28a745;">🎉 Surprise Me!</button>
+        <div class="action-buttons-container">
+            <button id="spin-button">Spin</button> <!-- Text changed from "🎲 Spin to Suggest" -->
+            <button id="surprise-button"><span class="button-text">🎉 Surprise Me!</span></button> <!-- Removed inline style, wrapped text -->
+        </div>
 
         <div id="suggestion-area" class="suggestion-area" style="display:none;">
             <h2>Your Suggestion:</h2>
