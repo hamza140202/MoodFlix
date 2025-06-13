@@ -56,24 +56,64 @@ document.addEventListener('DOMContentLoaded', () => {
     populateSelect(timeSelect, timeOptions, true);
 
     spinButton.addEventListener('click', () => {
-        const filters = {
-            mood: moodSelect.value,
-            genre: genreSelect.value,
-            time: timeSelect.value,
-            language: languageSelect.value,
-            year: yearInput.value.trim(), // .trim() for year input
-            minRating: ratingSelect.value
-        };
+        // Inside spinButton event listener
         const mediaType = typeSelect.value; // 'movie' or 'tv'
 
-        console.log('Spin button clicked with filters:', filters, 'and mediaType:', mediaType);
+        // Build queryParams for the proxy
+        const queryParams = {};
 
-        // New validation: At least one filter should ideally be chosen, or it's a very broad search.
-        // For now, we allow spinning with no specific filters (besides mediaType).
-        // The API handler defaults to popular items.
-        // A more user-friendly approach might be to encourage at least one selection if all are "Any".
-        // This can be a UI refinement later.
+        // Genre and Mood to Genre ID Logic
+        const selectedGenreName = genreSelect.value;
+        const selectedMoodName = moodSelect.value;
+        let genreIdQuery = '';
 
+        if (selectedGenreName && window.GENRE_MAP && window.GENRE_MAP[selectedGenreName]) {
+            genreIdQuery = window.GENRE_MAP[selectedGenreName].toString();
+        } else if (selectedMoodName && window.MOOD_GENRE_MAP && window.MOOD_GENRE_MAP[selectedMoodName] && window.MOOD_GENRE_MAP[selectedMoodName].length > 0) {
+            genreIdQuery = window.MOOD_GENRE_MAP[selectedMoodName].join('|');
+        }
+        if (genreIdQuery) {
+            queryParams.with_genres = genreIdQuery;
+        }
+
+        // Language
+        const selectedLanguage = languageSelect.value;
+        if (selectedLanguage) {
+            queryParams.with_original_language = selectedLanguage;
+        }
+
+        // Release Year
+        const selectedYear = yearInput.value.trim();
+        if (selectedYear) {
+            if (mediaType === 'movie') {
+                queryParams.primary_release_year = selectedYear;
+            } else if (mediaType === 'tv') {
+                queryParams.first_air_date_year = selectedYear;
+            }
+        }
+
+        // Minimum Rating
+        const selectedRating = ratingSelect.value;
+        if (selectedRating) {
+            queryParams.vote_average_gte = selectedRating;
+        }
+
+        // Time (Runtime)
+        const selectedTime = timeSelect.value;
+        if (selectedTime) {
+            if (selectedTime === 'short') queryParams['with_runtime.lte'] = '90';
+            else if (selectedTime === 'medium') {
+                queryParams['with_runtime.gte'] = '90';
+                queryParams['with_runtime.lte'] = '150';
+            } else if (selectedTime === 'long') queryParams['with_runtime.gte'] = '150';
+        }
+
+        // Page (for "Surprise Me" - this part is for the spin button, so page is not typically set here)
+        // queryParams.page = '1'; // Or handle pagination if implemented
+
+        console.log('Spin button clicked. Media Type:', mediaType, 'Query Params for Proxy:', queryParams);
+
+        // Existing UI updates for loading message
         suggestionArea.style.display = 'block';
         suggestionTitle.textContent = 'Spinning...';
         suggestionDescription.textContent = 'Consulting the TMDb spirits...';
@@ -81,29 +121,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const suggestionPoster = document.getElementById('suggestion-poster');
         if(suggestionPoster) suggestionPoster.style.display = 'none';
 
-        fetchAndDisplaySuggestion(mediaType, filters); // Pass mediaType and filters object
+        fetchAndDisplaySuggestion(mediaType, queryParams); // Pass mediaType and the resolved queryParams
     });
 
     // Inside DOMContentLoaded
     surpriseButton.addEventListener('click', () => {
         console.log('Surprise Me button clicked!');
 
-        // For "Surprise Me", we want broadly popular, well-rated items.
-        // Pick a random page from the first, say, 20 pages of popular results.
-        // TMDb often has many pages for popular items.
         const randomPage = Math.floor(Math.random() * 20) + 1;
+        const surpriseMediaType = Math.random() < 0.7 ? 'movie' : 'tv'; // Bias towards movies slightly
 
-        const surpriseFilters = {
-            minRating: '7.0', // Only fairly good ratings
-            page: randomPage,  // Fetch from a random page for variety
-            // Other filters (mood, genre, time, language, year) are intentionally omitted
-            // to get a wide variety of popular content.
-            // `api.js` defaults to 'en-US' if language is not specified.
+        const surpriseQueryParams = {
+            vote_average_gte: '7.0', // Only fairly good ratings
+            page: randomPage.toString() // Ensure page is a string if all params are strings
+            // No genre, language, year, time for surprise
         };
 
-        // Randomly pick 'movie' or 'tv' for more surprise
-        const mediaType = Math.random() < 0.7 ? 'movie' : 'tv'; // Bias towards movies slightly
+        console.log('Surprise Me button clicked. Media Type:', surpriseMediaType, 'Query Params for Proxy:', surpriseQueryParams);
 
+        // Existing UI updates for loading message
         suggestionArea.style.display = 'block';
         suggestionTitle.textContent = 'Conjuring a surprise...';
         suggestionDescription.textContent = 'Searching the cosmos for something amazing!';
@@ -111,8 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const suggestionPoster = document.getElementById('suggestion-poster');
         if(suggestionPoster) suggestionPoster.style.display = 'none';
 
-        // Call the existing fetch function, but with surprise parameters
-        fetchAndDisplaySuggestion(mediaType, surpriseFilters);
+        fetchAndDisplaySuggestion(surpriseMediaType, surpriseQueryParams);
     });
 
     // (Keep existing DOMContentLoaded, selectors, options, populateSelect, and spinButton event listener)
@@ -120,9 +155,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // and the API-based fetchAndDisplaySuggestion and its displayError.
 
 // NEW function for local fallback
-async function fetchDisplayLocalSuggestion(mediaType, filters) { // mediaType might be useful for local fallback later
-    // mood, genre, time are now inside filters.mood, filters.genre, filters.time
-    console.warn(`API call failed or no results. Attempting fallback to local data for MediaType: ${mediaType}, Filters:`, filters);
+async function fetchDisplayLocalSuggestion(mediaType, originalSelections) { // New signature
+    // console.warn(`API call failed... using queryParams:`, queryParams); // Old log
+    console.warn(`API call failed or no results. Attempting fallback to local data. MediaType: ${mediaType}, Selections:`, originalSelections); // New log
 
     // Display a message indicating fallback attempt
     suggestionTitle.textContent = 'Trying local backup...';
@@ -133,20 +168,23 @@ async function fetchDisplayLocalSuggestion(mediaType, filters) { // mediaType mi
 
 
     try {
-        const moodFilePath = `data/moods/${filters.mood}.json`; // New
+        // const moodFilePath = `data/moods/${queryParams.mood}.json`; // This wouldn't work if queryParams.mood isn't there
+        const moodFilePath = `data/moods/${originalSelections.mood}.json`;
         const response = await fetch(moodFilePath);
 
         if (!response.ok) {
             // If specific mood file not found, could try a generic local file or just show general error
             console.error(`Local data file not found: ${moodFilePath}`);
-            displayError(`TMDb API failed, and local data for '${filters.mood}' mood is not available.`);
+            displayError(`TMDb API failed, and local data for '${originalSelections.mood}' mood is not available.`);
             return;
         }
 
         const moodData = await response.json();
         const filteredSuggestions = moodData.filter(item => {
-            const genreMatch = item.genres && item.genres.includes(filters.genre);
-            const timeMatch = item.time_category && item.time_category === filters.time;
+            // const genreMatch = item.genres && item.genres.includes(queryParams.genre); // This wouldn't work
+            // const timeMatch = item.time_category && item.time_category === queryParams.time; // This wouldn't work
+            const genreMatch = item.genres && item.genres.includes(originalSelections.genre);
+            const timeMatch = item.time_category && item.time_category === originalSelections.time;
             return genreMatch && timeMatch;
         });
 
@@ -177,9 +215,9 @@ async function fetchDisplayLocalSuggestion(mediaType, filters) { // mediaType mi
 }
 
 // Modify the existing API fetchAndDisplaySuggestion
-async function fetchAndDisplaySuggestion(mediaType, filters) { // This is the main function called by spinButton
+async function fetchAndDisplaySuggestion(mediaType, queryParams) { // New signature
     // mood, genre, time are now inside filters.mood, filters.genre, filters.time
-    console.log(`Fetching API suggestion for MediaType: ${mediaType}, Filters:`, filters);
+    console.log(`Fetching API suggestion for MediaType: ${mediaType}, QueryParams:`, queryParams);
     suggestionArea.style.display = 'block';
     suggestionTitle.textContent = 'Spinning...';
     suggestionDescription.textContent = 'Consulting the TMDb spirits...';
@@ -188,13 +226,19 @@ async function fetchAndDisplaySuggestion(mediaType, filters) { // This is the ma
     if(suggestionPoster) suggestionPoster.style.display = 'none'; // Hide initially
 
 
-    // Assuming discoverMedia and getImageUrl are globally available
+    // Assuming fetchSuggestionsFromProxy and getImageUrl are globally available
     // const mediaType = 'movie'; // Now passed as a parameter
-    const apiResponse = await discoverMedia(mediaType, filters); // New call
+    const apiResponse = await fetchSuggestionsFromProxy(mediaType, queryParams); // Call the new proxy function
 
     if (apiResponse.error || !apiResponse.results || apiResponse.results.length === 0) {
         console.warn("API error or no results from API. Error:", apiResponse.error);
-        await fetchDisplayLocalSuggestion(mediaType, filters); // New: Call fallback with mediaType and filters
+        // New way: pass original selections for local fallback
+        const originalSelectionsForFallback = {
+            mood: moodSelect.value,     // Original mood name
+            genre: genreSelect.value,   // Original genre name
+            time: timeSelect.value      // Original time selection
+        };
+        await fetchDisplayLocalSuggestion(mediaType, originalSelectionsForFallback);
         return;
     }
 
