@@ -47,10 +47,14 @@ async function discoverMedia(mediaType = 'movie', filters = {}) {
     const endpoint = (mediaType === 'tv') ? `${BASE_URL}/discover/tv` : `${BASE_URL}/discover/movie`;
 
     // Language
-    if (language) { // language is ISO 639-1 code e.g. "en", "es"
+    if (language) { // language is an ISO 639-1 code e.g., "en", "es"
         params.append('with_original_language', language);
+        // Also set the main 'language' param for metadata to match,
+        // this can sometimes help with stricter filtering or result consistency.
+        params.append('language', language); 
     } else {
-        // Default to English results if no specific language is chosen, for general relevance
+        // Default metadata language to English if no specific original language is chosen.
+        // This also influences which movies/shows are returned if they have translations.
         params.append('language', 'en-US');
     }
 
@@ -83,12 +87,12 @@ async function discoverMedia(mediaType = 'movie', filters = {}) {
             params.append('first_air_date_year', year);
         }
     }
-
+    
     // Minimum Rating
     if (minRating) { // minRating is a string like "7.5"
         params.append('vote_average.gte', parseFloat(minRating));
     }
-
+    
     // Add 'watch_region' and 'with_watch_providers' for better "availability" if needed later.
     // For now, focusing on core discovery filters.
     // params.append('watch_region', 'US'); // Example: Filter by US availability
@@ -128,7 +132,7 @@ function getImageUrl(posterPath, size = 'w500') {
 
 // Export functions to be used by script.js
 // For now, discoverMedia is the main one. We can add getDetails(id) later if needed.
-// window.tmdbApi = { discoverMedia, getImageUrl };
+// window.tmdbApi = { discoverMedia, getImageUrl }; 
 // Using window is one way if not using modules.
 // For now, let's assume script.js will include this file or this code will be bundled.
 // For the subtask, just create the file with these functions.
