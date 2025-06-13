@@ -127,15 +127,14 @@ input#year-input /* Apply to year input as well */ {
     line-height: 1.6;
 }
 
-/* TMDb Attribution Styles */
 .tmdb-attribution {
-    font-size: 0.75em;    /* Smaller text */
-    color: #FFD700;      /* Gold color for visibility and theme consistency */
+    font-size: 0.6em;
+    color: #888888;
     text-align: center;
-    padding-top: 15px;    /* Space above the text */
-    margin-top: 25px;     /* More space separating from suggestion area */
-    border-top: 1px solid #4B0082; /* Indigo border, matching button color family */
-    opacity: 0.85;         /* Slightly subdued to be less prominent than main content */
+    margin-top: 100px;
+    padding: 10px 0;
+    opacity: 0.3;
+    position: relative;
 }
 
 .tmdb-attribution p {
