@@ -1,28 +1,42 @@
 body {
-    font-family: sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-family: sans-serif; /* Keep existing font or choose a new one later */
+    display: flex; /* Keep if already there for centering .container */
+    justify-content: center; /* Keep if already there */
+    align-items: flex-start; /* Changed from center to flex-start for long pages with fixed bg */
     min-height: 100vh;
-    background-color: #f4f4f4;
+    background-color: #1a1a2e; /* Fallback color - a dark blue/purple */
+
+    /* Background Image and Overlay */
+    background-image: linear-gradient(rgba(15, 10, 25, 0.65), rgba(15, 10, 25, 0.65)), url('https://raw.githubusercontent.com/hamza140202/MoodFlix/refs/heads/main/f9b34010093437adba2bf654c8cd72b3.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Keeps the background image fixed during scroll */
+
     margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
+    padding: 20px; /* Keep existing padding or adjust as needed */
+    box-sizing: border-box; /* Keep existing */
+
+    color: #f0f0f0; /* Default light text color for contrast */
 }
 
 .container {
-    background-color: #fff;
+    background-color: rgba(25, 25, 112, 0.85); /* Midnight blueish, semi-transparent */
     padding: 30px;
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Old shadow, consider removing or changing for new theme */
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); /* Subtle gold glow */
     width: 100%;
     max-width: 600px;
     text-align: center;
+    border: 1px solid #FFD700; /* Gold border */
+    color: #E0E0E0; /* Light text color for content within the container */
 }
 
-h1 {
-    color: #333;
-    margin-bottom: 20px;
+h1 { /* Main page title */
+    color: #DA70D6; /* Orchid - vibrant purple */
+    margin-bottom: 25px;
+    text-shadow: 0 0 5px rgba(218, 112, 214, 0.5); /* Optional: subtle glow for fantasy feel */
 }
 
 .filters {
@@ -39,50 +53,72 @@ h1 {
 }
 
 .filter-group label {
-    margin-bottom: 5px;
+    margin-bottom: 8px; /* Increased spacing slightly */
     font-weight: bold;
-    color: #555;
+    color: #BDB7F0; /* Light lavender/blue */
 }
 
-.filter-group select {
+.filter-group select,
+input#year-input /* Apply to year input as well */ {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #8A2BE2; /* Blue-violet border */
     border-radius: 4px;
     box-sizing: border-box;
+    background-color: #1a1a2e; /* Dark blue/purple background */
+    color: #f0f0f0; /* Light text */
+    font-size: 0.95em;
 }
 
-#spin-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
+/* Style for options within select dropdowns for better theme consistency if possible (browser dependent) */
+.filter-group select option {
+    background-color: #1a1a2e; /* Dark background for options */
+    color: #f0f0f0; /* Light text for options */
+}
+
+#spin-button, #surprise-button {
+    background-color: #4B0082; /* Indigo - deep purple */
+    color: #FFD700; /* Gold text */
+    border: 1px solid #FFD700; /* Gold border */
     padding: 12px 25px;
     font-size: 1.1em;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
     margin-bottom: 20px;
+    text-shadow: 0 0 3px rgba(0,0,0,0.3); /* Subtle text shadow for depth */
 }
 
-#spin-button:hover {
-    background-color: #0056b3;
+#spin-button:hover, #surprise-button:hover {
+    background-color: #6A0DAD; /* Brighter purple on hover */
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); /* Gold glow on hover */
+}
+
+/* Specific style for surprise button if it had different color originally */
+#surprise-button {
+    background-color: #3E0066; /* Slightly different shade of deep purple */
+    /* margin-left: 10px; /* Retain if needed */
+}
+#surprise-button:hover {
+    background-color: #5A0093;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 .suggestion-area {
     margin-top: 20px;
     padding: 20px;
-    border: 1px solid #eee;
+    border: 1px dashed #FFD700; /* Dashed gold border */
     border-radius: 5px;
-    background-color: #f9f9f9;
+    background-color: rgba(40, 20, 60, 0.8); /* Semi-transparent dark purple, slightly different from container */
 }
 
-.suggestion-area h2 {
+#suggestion-area h2 { /* "Your Suggestion:" heading */
+    color: #DA70D6; /* Orchid */
     margin-top: 0;
-    color: #333;
 }
 
-#suggestion-content h3 {
-    color: #007bff;
+#suggestion-title { /* Movie/Series Title */
+    color: #FFD700; /* Gold */
     margin-bottom: 10px;
 }
 
@@ -91,45 +127,18 @@ h1 {
     line-height: 1.6;
 }
 
-/* Footer and Attribution Styles */
-footer {
+/* TMDb Attribution Styles */
+.tmdb-attribution {
+    font-size: 0.75em;    /* Smaller text */
+    color: #FFD700;      /* Gold color for visibility and theme consistency */
     text-align: center;
-    padding: 15px; /* Adjusted padding slightly */
-    margin-top: 30px;
-    font-size: 0.8em; /* Slightly smaller font for mobile */
-    color: #666;
-    border-top: 1px solid #eee;
-    width: 90%; /* Use a percentage width for better fluidity */
-    max-width: 600px; /* Max width still applies for larger screens */
-    margin-left: auto;
-    margin-right: auto;
-    box-sizing: border-box; /* Ensure padding doesn't add to width */
+    padding-top: 15px;    /* Space above the text */
+    margin-top: 25px;     /* More space separating from suggestion area */
+    border-top: 1px solid #4B0082; /* Indigo border, matching button color family */
+    opacity: 0.85;         /* Slightly subdued to be less prominent than main content */
 }
 
-footer p {
-    margin: 0;
-    display: flex; /* Use flexbox for better control */
-    flex-direction: column; /* Stack items vertically on small screens by default */
-    align-items: center; /* Center items in the column */
-    justify-content: center; /* Center content if there's space */
-    gap: 5px; /* Add a small gap between text and image when stacked */
-}
-
-footer a {
-    display: inline-block; /* Allows margin/padding on the link if needed */
-    line-height: 1; /* Helps with vertical alignment of image if it were inline with text */
-}
-
-footer a img {
-    height: 20px;
-    /* vertical-align: middle; no longer needed as flex handles alignment */
-    /* margin-left: 5px; gap in flex p handles spacing */
-}
-
-/* Media query for slightly larger screens to put text and logo side-by-side if space allows */
-@media (min-width: 400px) { /* Adjust breakpoint as needed */
-    footer p {
-        flex-direction: row; /* Text and logo side-by-side */
-        gap: 8px; /* Adjust gap for row layout */
-    }
+.tmdb-attribution p {
+    margin: 0; /* Remove default paragraph margin */
+    padding: 5px 0;
 }
