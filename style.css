@@ -1,11 +1,16 @@
-body {
-    font-family: sans-serif; /* Keep existing font or choose a new one later */
-    display: flex; /* Keep if already there for centering .container */
-    justify-content: center; /* Keep if already there */
-    align-items: flex-start; /* Changed from center to flex-start for long pages with fixed bg */
-    min-height: 100vh;
-    background-color: #1a1a2e; /* Fallback color - a dark blue/purple */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: #f4f4f4;
+    font-family: sans-serif;
+}
     /* Background Image and Overlay */
     background-image: linear-gradient(rgba(15, 10, 25, 0.65), rgba(15, 10, 25, 0.65)), url('https://raw.githubusercontent.com/hamza140202/MoodFlix/refs/heads/main/f9b34010093437adba2bf654c8cd72b3.jpg');
     background-size: cover;
@@ -140,4 +145,11 @@ input#year-input /* Apply to year input as well */ {
 .tmdb-attribution p {
     margin: 0; /* Remove default paragraph margin */
     padding: 5px 0;
+}
+.main-wrapper {
+    flex: 1; /* pushes footer to bottom */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
 }
