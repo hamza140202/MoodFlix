@@ -3,38 +3,14 @@
 const API_KEY = '82ad91cc5edeb91b5df7f92d9c738c3e'; // User-provided API key
 const BASE_URL = 'https://api.themoviedb.org/3';
 
-const GENRE_MAP = {
-    'action': 28,
-    'comedy': 35,
-    'drama': 18,
-    'horror': 27,
-    'scifi': 878,
-    // Add more genres as needed from TMDb
-    'thriller': 53,
-    'family': 10751,
-    'adventure': 12,
-    'animation': 16,
-    'mystery': 9648,
-    'romance': 10749,
-    'music': 10402
-};
-
-// Basic mapping of moods to genres or keywords. This can be expanded.
-// For keywords, we'd need another mapping or a different API call strategy.
-// For now, let's try mapping moods to a combination of genres.
-const MOOD_GENRE_MAP = {
-    'happy': [GENRE_MAP.comedy, GENRE_MAP.family, GENRE_MAP.animation],
-    'thrilling': [GENRE_MAP.action, GENRE_MAP.thriller, GENRE_MAP.horror, GENRE_MAP.mystery],
-    'dramatic': [GENRE_MAP.drama],
-    'calm': [GENRE_MAP.family, GENRE_MAP.romance] // Example, can be refined
-};
+// GENRE_MAP and MOOD_GENRE_MAP are removed as script.js will now pass resolved IDs.
 
 // utils/api.js
-// (Keep API_KEY, BASE_URL, GENRE_MAP, MOOD_GENRE_MAP, getImageUrl, and window assignments as they are)
 
 async function discoverMedia(mediaType = 'movie', filters = {}) {
-    // filters object will contain: mood, genre, time, language, year, minRating
-    const { mood, genre, time, language, year, minRating, page } = filters; // Add page here
+    // filters object now expects: time, language, year, minRating, page, selectedGenres, selectedKeywords
+    // emotionMood, magicType etc. keys are used by script.js to build selectedGenres/selectedKeywords
+    const { time, language, year, minRating, page, selectedGenres, selectedKeywords } = filters;
 
     let params = new URLSearchParams({
         api_key: API_KEY,
@@ -58,16 +34,17 @@ async function discoverMedia(mediaType = 'movie', filters = {}) {
         params.append('language', 'en-US');
     }
 
-    // Genre and Mood to Genre Logic
-    let genreQueryParam = '';
-    if (genre && GENRE_MAP[genre]) {
-        genreQueryParam = GENRE_MAP[genre];
-    } else if (mood && MOOD_GENRE_MAP[mood] && MOOD_GENRE_MAP[mood].length > 0) {
-        // Fallback to mood genres if no specific genre is selected
-        genreQueryParam = MOOD_GENRE_MAP[mood].join('|');
+    // Genre Logic (using selectedGenres array)
+    if (selectedGenres && selectedGenres.length > 0) {
+        // TMDb expects genre IDs joined by a comma (for AND logic)
+        params.append('with_genres', selectedGenres.join(','));
     }
-    if (genreQueryParam) {
-        params.append('with_genres', genreQueryParam);
+
+    // Keyword Logic (using selectedKeywords array)
+    if (selectedKeywords && selectedKeywords.length > 0) {
+        // TMDb expects keyword IDs joined by a pipe (for OR logic) or comma (for AND logic)
+        // Using pipe for OR logic for keywords is common.
+        params.append('with_keywords', selectedKeywords.join('|'));
     }
 
     // Time (runtime)
