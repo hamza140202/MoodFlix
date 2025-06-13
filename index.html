@@ -41,13 +41,20 @@
         <div id="suggestion-area" class="suggestion-area" style="display:none;">
             <h2>Your Suggestion:</h2>
             <div id="suggestion-content">
+                <img id="suggestion-poster" src="" alt="Suggestion Poster" style="display:none; max-width: 200px; height: auto; margin: 0 auto 15px; border-radius: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                 <h3 id="suggestion-title"></h3>
                 <p id="suggestion-description"></p>
-                <p id="suggestion-details"></p>
+                <p id="suggestion-details">
+                    Release Date: <span id="suggestion-release-date"></span><br>
+                    Rating: <span id="suggestion-rating"></span>/10<br>
+                    Popularity: <span id="suggestion-popularity"></span>
+                </p>
+                <!-- We can add a link for a trailer later if desired -->
             </div>
         </div>
     </div>
 
+    <script src="utils/api.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

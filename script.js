@@ -72,68 +72,127 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchAndDisplaySuggestion(selectedMood, selectedGenre, selectedTime);
     });
 
-    async function fetchAndDisplaySuggestion(mood, genre, time) {
-        console.log(`Fetching suggestion for Mood: ${mood}, Genre: ${genre}, Time: ${time}`);
+    // (Keep existing DOMContentLoaded, selectors, options, populateSelect, and spinButton event listener)
 
-        try {
-            // Strategy: Fetch data based on the selected mood first.
-            // Then filter this data by the selected genre and time.
-            // This assumes mood files exist and are the primary filter.
-            // Fallback/alternative strategies can be added later.
+// and the API-based fetchAndDisplaySuggestion and its displayError.
 
-            const moodFilePath = `data/moods/${mood}.json`;
-            const response = await fetch(moodFilePath);
+// NEW function for local fallback
+async function fetchDisplayLocalSuggestion(mood, genre, time) {
+    console.warn(`API call failed or no results. Attempting fallback to local data for Mood: ${mood}, Genre: ${genre}, Time: ${time}`);
 
-            if (!response.ok) {
-                if (response.status === 404) {
-                    console.error(`Data file not found: ${moodFilePath}`);
-                    displayError(`Sorry, we don't have suggestions for the mood '${mood}' yet.`);
-                    return;
-                }
-                throw new Error(`HTTP error! status: ${response.status} while fetching ${moodFilePath}`);
-            }
+    // Display a message indicating fallback attempt
+    suggestionTitle.textContent = 'Trying local backup...';
+    suggestionDescription.textContent = `TMDb is unavailable or had no matches. Searching our local list...`;
+    suggestionDetails.textContent = '';
+    const suggestionPoster = document.getElementById('suggestion-poster');
+    if (suggestionPoster) suggestionPoster.style.display = 'none';
 
-            const moodData = await response.json();
-            console.log("Fetched mood data:", moodData);
 
-            const filteredSuggestions = moodData.filter(item => {
-                // Check genre: item.genres should be an array, check if selectedGenre is in it.
-                const genreMatch = item.genres && item.genres.includes(genre);
-                // Check time category
-                const timeMatch = item.time_category && item.time_category === time;
+    try {
+        const moodFilePath = `data/moods/${mood}.json`; // Ensure these paths are still correct
+        const response = await fetch(moodFilePath);
 
-                return genreMatch && timeMatch;
-            });
-
-            console.log("Filtered suggestions:", filteredSuggestions);
-
-            if (filteredSuggestions.length > 0) {
-                const randomIndex = Math.floor(Math.random() * filteredSuggestions.length);
-                const suggestion = filteredSuggestions[randomIndex];
-
-                suggestionTitle.textContent = suggestion.title;
-                suggestionDescription.textContent = suggestion.description;
-                // Construct details string
-                let detailsStr = `Genre(s): ${suggestion.genres.join(', ')}. `;
-                detailsStr += `Time Category: ${suggestion.time_category.charAt(0).toUpperCase() + suggestion.time_category.slice(1)}.`;
-                // If actual duration exists in data, could add it here too.
-                // e.g. if (suggestion.duration_actual_minutes) detailsStr += ` Duration: ${suggestion.duration_actual_minutes} min.`
-                suggestionDetails.textContent = detailsStr;
-
-                console.log('Suggestion displayed:', suggestion.title);
-            } else {
-                displayError(`No suggestions found for Mood: ${mood}, Genre: ${genre}, Time: ${time}. Try other combinations!`);
-            }
-
-        } catch (error) {
-            console.error('Error fetching or processing suggestions:', error);
-            displayError('Oops! Something went wrong while fetching suggestions. Please try again.');
+        if (!response.ok) {
+            // If specific mood file not found, could try a generic local file or just show general error
+            console.error(`Local data file not found: ${moodFilePath}`);
+            displayError(`TMDb API failed, and local data for '${mood}' mood is not available.`);
+            return;
         }
+
+        const moodData = await response.json();
+        const filteredSuggestions = moodData.filter(item => {
+            const genreMatch = item.genres && item.genres.includes(genre);
+            const timeMatch = item.time_category && item.time_category === time;
+            return genreMatch && timeMatch;
+        });
+
+        if (filteredSuggestions.length > 0) {
+            const randomIndex = Math.floor(Math.random() * filteredSuggestions.length);
+            const suggestion = filteredSuggestions[randomIndex];
+
+            suggestionTitle.textContent = `[LOCAL] ${suggestion.title}`; // Indicate it's a local fallback
+            suggestionDescription.textContent = suggestion.description;
+
+            let detailsStr = `Genre(s): ${suggestion.genres.join(', ')}. `;
+            detailsStr += `Time Category: ${suggestion.time_category}. (This is a local fallback suggestion)`;
+            suggestionDetails.textContent = detailsStr;
+
+            // Hide poster as local data doesn't have it in this structure
+            // const posterImg = document.getElementById('suggestion-poster'); // Already got suggestionPoster above
+            if (suggestionPoster) suggestionPoster.style.display = 'none'; // Ensure it's hidden
+
+            console.log('Local fallback suggestion displayed:', suggestion.title);
+        } else {
+            displayError(`TMDb API failed, and no local suggestions found for your criteria.`);
+        }
+
+    } catch (error) {
+        console.error('Error fetching or processing local fallback suggestions:', error);
+        displayError('TMDb API failed, and our local backup also encountered an issue.');
+    }
+}
+
+// Modify the existing API fetchAndDisplaySuggestion
+async function fetchAndDisplaySuggestion(mood, genre, time) { // This is the main function called by spinButton
+    console.log(`Fetching API suggestion for Mood: ${mood}, Genre: ${genre}, Time: ${time}`);
+    suggestionArea.style.display = 'block';
+    suggestionTitle.textContent = 'Spinning...';
+    suggestionDescription.textContent = 'Consulting the TMDb spirits...';
+    suggestionDetails.textContent = '';
+    const suggestionPoster = document.getElementById('suggestion-poster'); // Ensure poster is managed
+    if(suggestionPoster) suggestionPoster.style.display = 'none'; // Hide initially
+
+
+    // Assuming discoverMedia and getImageUrl are globally available
+    const mediaType = 'movie';
+    const apiResponse = await discoverMedia(mediaType, mood, genre, time);
+
+    if (apiResponse.error || !apiResponse.results || apiResponse.results.length === 0) {
+        console.warn("API error or no results from API. Error:", apiResponse.error);
+        await fetchDisplayLocalSuggestion(mood, genre, time); // Call fallback
+        return;
     }
 
-    function displayError(message) {
-        suggestionTitle.textContent = 'Error';
+    // This part remains largely the same if API call is successful
+    const randomIndex = Math.floor(Math.random() * apiResponse.results.length);
+    const suggestion = apiResponse.results[randomIndex];
+    console.log("API Suggestion:", suggestion);
+
+    // const suggestionPoster = document.getElementById('suggestion-poster'); // Already declared above
+    const suggestionReleaseDate = document.getElementById('suggestion-release-date');
+    const suggestionRating = document.getElementById('suggestion-rating');
+    const suggestionPopularity = document.getElementById('suggestion-popularity');
+
+    suggestionTitle.textContent = suggestion.title || suggestion.name;
+    suggestionDescription.textContent = suggestion.overview
+        ? (suggestion.overview.substring(0, 280) + (suggestion.overview.length > 280 ? '...' : ''))
+        : "No description available.";
+
+    if (suggestion.poster_path && suggestionPoster) { // Check if poster element exists
+        suggestionPoster.src = getImageUrl(suggestion.poster_path);
+        suggestionPoster.style.display = 'block';
+    } else if (suggestionPoster) {
+        suggestionPoster.style.display = 'none';
+    }
+
+    if(suggestionReleaseDate) suggestionReleaseDate.textContent = suggestion.release_date || suggestion.first_air_date || "N/A";
+    if(suggestionRating) suggestionRating.textContent = suggestion.vote_average ? suggestion.vote_average.toFixed(1) : "N/A";
+
+    const popularitySpan = document.getElementById('suggestion-popularity');
+    if (popularitySpan) {
+         popularitySpan.textContent = suggestion.popularity ? suggestion.popularity.toFixed(0) : "N/A";
+    }
+    console.log('Updated display with API poster and details for:', suggestion.title || suggestion.name);
+}
+
+// displayError function remains as is from the previous step
+ function displayError(message) {
+        const suggestionPoster = document.getElementById('suggestion-poster');
+        suggestionTitle.textContent = 'Oops!';
         suggestionDescription.textContent = message;
-        suggestionDetails.textContent = '';
+        suggestionDetails.textContent = 'Please try different selections or check back later.';
+        if (suggestionPoster) {
+            suggestionPoster.style.display = 'none'; // Hide poster on error
+        }
     }
 });
