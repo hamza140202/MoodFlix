@@ -47,10 +47,14 @@ async function discoverMedia(mediaType = 'movie', filters = {}) {
     const endpoint = (mediaType === 'tv') ? `${BASE_URL}/discover/tv` : `${BASE_URL}/discover/movie`;
 
     // Language
-    if (language) { // language is ISO 639-1 code e.g. "en", "es"
+    if (language) { // language is an ISO 639-1 code e.g., "en", "es"
         params.append('with_original_language', language);
+        // Also set the main 'language' param for metadata to match,
+        // this can sometimes help with stricter filtering or result consistency.
+        params.append('language', language);
     } else {
-        // Default to English results if no specific language is chosen, for general relevance
+        // Default metadata language to English if no specific original language is chosen.
+        // This also influences which movies/shows are returned if they have translations.
         params.append('language', 'en-US');
     }
 
