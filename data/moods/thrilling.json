@@ -1,0 +1,5 @@
+[
+    { "id": "thrill001", "title": "Inception", "description": "A mind-bending thriller about dream infiltration.", "genres": ["scifi", "action"], "time_category": "long" },
+    { "id": "thrill002", "title": "The Silence of the Lambs", "description": "A young FBI trainee must receive the help of an incarcerated and manipulative cannibal killer to help catch another serial killer.", "genres": ["drama", "horror"], "time_category": "medium" },
+    { "id": "thrill003", "title": "A Quiet Place", "description": "A family struggles for survival in a world where most humans have been killed by blind but noise-sensitive creatures.", "genres": ["horror", "scifi"], "time_category": "short" }
+]

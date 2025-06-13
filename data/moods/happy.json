@@ -1,0 +1,5 @@
+[
+    { "id": "happy001", "title": "Paddington 2", "description": "Paddington takes on a number of odd jobs to buy a pop-up book for Aunt Lucy's 100th birthday.", "genres": ["comedy", "family"], "time_category": "medium" },
+    { "id": "happy002", "title": "School of Rock", "description": "After being kicked out of his rock band, Dewey Finn becomes a substitute teacher of an uptight elementary private school, only to try and turn his class into a rock band.", "genres": ["comedy", "music"], "time_category": "medium" },
+    { "id": "happy003", "title": "Marcel the Shell with Shoes On", "description": "A cash-strapped documentary filmmaker discovers Marcel, an adorable one-inch-tall shell who ekes out a colorful existence with his grandmother Connie and their pet lint, Alan.", "genres": ["comedy", "animation"], "time_category": "short" }
+]

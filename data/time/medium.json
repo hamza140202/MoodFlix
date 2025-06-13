@@ -1,0 +1,5 @@
+[
+    { "id": "medium001", "title": "Parasite", "description": "Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan.", "moods": ["dramatic", "thrilling"], "genres": ["drama", "thriller"], "duration_actual_minutes": 132 },
+    { "id": "medium002", "title": "Knives Out", "description": "A detective investigates the death of a patriarch of an eccentric, combative family.", "moods": ["dramatic", "comedy"], "genres": ["mystery", "comedy"], "duration_actual_minutes": 130 },
+    { "id": "medium003", "title": "Spider-Man: Into the Spider-Verse", "description": "Teen Miles Morales becomes the Spider-Man of his universe, and must join with five spider-powered individuals from other dimensions to stop a threat for all realities.", "moods": ["happy", "action", "adventure"], "genres": ["animation", "action"], "duration_actual_minutes": 117 }
+]

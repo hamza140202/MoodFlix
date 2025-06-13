@@ -1,0 +1,5 @@
+[
+    { "id": "scifi001", "title": "Blade Runner 2049", "description": "Young Blade Runner K's discovery of a long-buried secret leads him to track down former Blade Runner Rick Deckard, who's been missing for thirty years.", "moods": ["thrilling", "dramatic"], "time_category": "long" },
+    { "id": "scifi002", "title": "The Matrix", "description": "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.", "moods": ["thrilling", "action"], "time_category": "medium" },
+    { "id": "scifi003", "title": "Galaxy Quest", "description": "The alumni cast of a space opera television series have to play their roles as the real thing when an alien race needs their help.", "moods": ["happy", "adventure"], "time_category": "medium" }
+]
