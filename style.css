@@ -90,3 +90,27 @@ h1 {
     color: #555;
     line-height: 1.6;
 }
+
+/* Footer and Attribution Styles */
+footer {
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 30px; /* Space above the footer */
+    font-size: 0.85em; /* Smaller font for attribution */
+    color: #666; /* Subdued text color */
+    border-top: 1px solid #eee; /* Optional separator line */
+    width: 100%;
+    max-width: 600px; /* Align with container width */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+footer p {
+    margin: 0;
+}
+
+footer a img {
+    height: 20px; /* Ensure logo height is controlled */
+    vertical-align: middle;
+    margin-left: 5px;
+}
