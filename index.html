@@ -14,7 +14,7 @@
             <div class="filter-group">
                 <label for="mood-select">Mood:</label>
                 <select id="mood-select">
-                    <option value="">--Select Mood--</option>
+                    <option value="">-- Any Mood --</option>
                     <!-- Mood options will be populated by JavaScript -->
                 </select>
             </div>
@@ -22,7 +22,7 @@
             <div class="filter-group">
                 <label for="genre-select">Genre:</label>
                 <select id="genre-select">
-                    <option value="">--Select Genre--</option>
+                    <option value="">-- Any Genre --</option>
                     <!-- Genre options will be populated by JavaScript -->
                 </select>
             </div>
@@ -30,13 +30,55 @@
             <div class="filter-group">
                 <label for="time-select">Available Time:</label>
                 <select id="time-select">
-                    <option value="">--Select Time--</option>
+                    <option value="">-- Any Time --</option>
                     <!-- Time options will be populated by JavaScript -->
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="type-select">Media Type:</label>
+                <select id="type-select">
+                    <option value="movie">Movies</option>
+                    <option value="tv">TV Shows</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="language-select">Language:</label>
+                <select id="language-select">
+                    <option value="">-- Any Language --</option>
+                    <option value="en">English</option>
+                    <option value="es">Spanish (Español)</option>
+                    <option value="fr">French (Français)</option>
+                    <option value="ja">Japanese (日本語)</option>
+                    <option value="ko">Korean (한국어)</option>
+                    <option value="hi">Hindi (हिन्दी)</option>
+                    <option value="de">German (Deutsch)</option>
+                    <option value="it">Italian (Italiano)</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="year-input">Release Year (e.g., 2023):</label>
+                <input type="number" id="year-input" placeholder="Any Year" min="1900" max="2099" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; width: 100%;">
+            </div>
+
+            <div class="filter-group">
+                <label for="rating-select">Minimum Rating (TMDb):</label>
+                <select id="rating-select">
+                    <option value="">-- Any Rating --</option>
+                    <option value="8.5">8.5+</option>
+                    <option value="8.0">8.0+</option>
+                    <option value="7.5">7.5+</option>
+                    <option value="7.0">7.0+</option>
+                    <option value="6.5">6.5+</option>
+                    <option value="6.0">6.0+</option>
                 </select>
             </div>
         </div>
 
         <button id="spin-button">🎲 Spin to Suggest</button>
+        <button id="surprise-button" style="margin-left: 10px; background-color: #28a745;">🎉 Surprise Me!</button>
 
         <div id="suggestion-area" class="suggestion-area" style="display:none;">
             <h2>Your Suggestion:</h2>

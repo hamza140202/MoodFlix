@@ -29,81 +29,96 @@ const MOOD_GENRE_MAP = {
     'calm': [GENRE_MAP.family, GENRE_MAP.romance] // Example, can be refined
 };
 
-async function discoverMedia(type = 'movie', mood, genre, time) {
+// utils/api.js
+// (Keep API_KEY, BASE_URL, GENRE_MAP, MOOD_GENRE_MAP, getImageUrl, and window assignments as they are)
+
+async function discoverMedia(mediaType = 'movie', filters = {}) {
+    // filters object will contain: mood, genre, time, language, year, minRating
+    const { mood, genre, time, language, year, minRating, page } = filters; // Add page here
+
     let params = new URLSearchParams({
         api_key: API_KEY,
-        sort_by: 'popularity.desc', // Get popular items
-        page: 1 // Start with the first page of results
+        sort_by: 'popularity.desc',
+        include_adult: 'false',
+        page: page || 1 // Use provided page or default to 1
     });
 
-    // Genre
-    if (genre && GENRE_MAP[genre]) {
-        params.append('with_genres', GENRE_MAP[genre]);
+    // Media Type determines the endpoint
+    const endpoint = (mediaType === 'tv') ? `${BASE_URL}/discover/tv` : `${BASE_URL}/discover/movie`;
+
+    // Language
+    if (language) { // language is ISO 639-1 code e.g. "en", "es"
+        params.append('with_original_language', language);
+    } else {
+        // Default to English results if no specific language is chosen, for general relevance
+        params.append('language', 'en-US');
     }
 
-    // Mood to Genre Combination (if primary genre isn't specific enough or to broaden search)
-    // This logic might need refinement. If a specific genre is selected,
-    // mood might act as a secondary filter or keyword.
-    // For now, if a mood is selected, we'll try to use its associated genres.
-    // This could lead to a broad search if not combined carefully with the specific genre.
-    // A better approach might be to use mood for keywords if the API supports it well for discovery.
-    // Let's prioritize the selected genre first, and use mood genres as a fallback or supplement.
-
-    let moodGenreIds = [];
-    if (mood && MOOD_GENRE_MAP[mood]) {
-        moodGenreIds = MOOD_GENRE_MAP[mood];
-    }
-
-    // If a specific genre is selected, use it.
-    // If not, and mood genres are available, use them.
-    // If both, the specific genre takes precedence.
     // Genre and Mood to Genre Logic
     let genreQueryParam = '';
     if (genre && GENRE_MAP[genre]) {
         genreQueryParam = GENRE_MAP[genre];
     } else if (mood && MOOD_GENRE_MAP[mood] && MOOD_GENRE_MAP[mood].length > 0) {
         // Fallback to mood genres if no specific genre is selected
-        // Join with '|' for OR logic if mood maps to multiple genres
         genreQueryParam = MOOD_GENRE_MAP[mood].join('|');
     }
-
     if (genreQueryParam) {
         params.append('with_genres', genreQueryParam);
     }
 
     // Time (runtime)
-    // TMDb runtime is in minutes.
     if (time) {
-        if (time === 'short') params.append('with_runtime.lte', 90); // Max 1.5 hours
+        if (time === 'short') params.append('with_runtime.lte', 90);
         else if (time === 'medium') {
             params.append('with_runtime.gte', 90);
-            params.append('with_runtime.lte', 150); // 1.5 to 2.5 hours
-        }
-        else if (time === 'long') params.append('with_runtime.gte', 150); // Min 2.5 hours
+            params.append('with_runtime.lte', 150);
+        } else if (time === 'long') params.append('with_runtime.gte', 150);
     }
 
-    // Add language filter to prioritize English results and improve relevance
-    params.append('language', 'en-US');
-    params.append('include_adult', 'false'); // Exclude adult content
+    // Release Year
+    if (year) { // year is a string like "2023"
+        if (mediaType === 'movie') {
+            params.append('primary_release_year', year);
+        } else if (mediaType === 'tv') {
+            params.append('first_air_date_year', year);
+        }
+    }
 
-    const url = `${BASE_URL}/discover/${type}?${params.toString()}`;
-    console.log("Requesting URL:", url); // For debugging
+    // Minimum Rating
+    if (minRating) { // minRating is a string like "7.5"
+        params.append('vote_average.gte', parseFloat(minRating));
+    }
+
+    // Add 'watch_region' and 'with_watch_providers' for better "availability" if needed later.
+    // For now, focusing on core discovery filters.
+    // params.append('watch_region', 'US'); // Example: Filter by US availability
+
+    const url = `${endpoint}?${params.toString()}`;
+    console.log("Requesting TMDb URL:", url);
 
     try {
         const response = await fetch(url);
         if (!response.ok) {
-            console.error(`API error! Status: ${response.status}`, await response.json());
-            return { results: [], error: `API error: ${response.status}` };
+            const errorData = await response.json().catch(() => ({})); // Try to get error message
+            console.error(`API error! Status: ${response.status}`, errorData);
+            let errorMsg = `API error: ${response.status}`;
+            if (errorData.status_message) errorMsg += ` - ${errorData.status_message}`;
+            return { results: [], error: errorMsg };
         }
         const data = await response.json();
         // Filter out results without a poster path or overview for better quality suggestions
-        data.results = data.results.filter(item => item.poster_path && item.overview);
-        return data; // Contains 'results', 'page', 'total_pages', 'total_results'
+        if (data.results) {
+             data.results = data.results.filter(item => item.poster_path && item.overview && item.overview.trim() !== "");
+        } else {
+            data.results = [];
+        }
+        return data;
     } catch (error) {
         console.error('Network error or other issue fetching data:', error);
         return { results: [], error: 'Network error or issue fetching data.' };
     }
 }
+// Ensure window.discoverMedia = discoverMedia; and window.getImageUrl = getImageUrl; are still at the end of the file.
 
 // Function to get image URL
 function getImageUrl(posterPath, size = 'w500') {
