@@ -48,3 +48,11 @@ This project is a web-based tool to help you decide what movie or series to watc
 ---
 
 Enjoy finding your next watch!
+
+---
+
+## Project status
+
+**Completed project** — verified in the portfolio audit of **7 November 2026** (README, codebase and project state reviewed).
+
+_Last verified: 7 November 2026_
